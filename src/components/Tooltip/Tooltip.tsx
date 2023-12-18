@@ -7,10 +7,19 @@ import { IconFilter } from '../SectionLayout/SectionLayout.styled'
 import adjustment from '../../assets/adjustment.svg'
 import { IoClose } from 'react-icons/io5'
 
+type OptionList = {
+  [key: string]: string
+}
+
 const checkList = ['Cobro con datafono', 'Cobros con link de pago', 'Ver todos']
+const optionList: OptionList = {
+  'Cobro con datafono': 'dataphone',
+  'Cobros con link de pago': 'link',
+}
 
 export const visible = signal(false)
 export const checked = signal<string[]>([])
+export const listChecks = signal<string[]>(Object.values(optionList))
 
 const setVisible = (value: boolean) => {
   visible.value = value
@@ -29,15 +38,23 @@ const handleCheck = (event: ChangeEvent<HTMLInputElement>) => {
   }
   setChecked(updatedList)
 }
-const handleForm = () => {}
+const handleCheckboxList = () => {
+  const data = checked.value.map(x => optionList[x])
+  listChecks.value = data[0] !== undefined ? data : Object.values(optionList)
+}
 
-// Return classes based on whether item is checked
 const isChecked = (item: string) =>
   checked.value.includes(item) ? 'checked-item' : 'not-checked-item'
 
 const Tooltip: FC<TooltipProps> = ({ dataTestId = 'tooltip' }) => {
   return (
-    <TooltipContainer data-testid={dataTestId} onClick={() => setVisible(!visible.value)}>
+    <TooltipContainer
+      data-testid={dataTestId}
+      onClick={e => {
+        e.stopPropagation()
+        setVisible(true)
+      }}
+    >
       <div>FILTRAR</div>
       <IconFilter src={adjustment} alt='filtro' />
       <TooltipPop $visible={visible.value}>
@@ -45,17 +62,22 @@ const Tooltip: FC<TooltipProps> = ({ dataTestId = 'tooltip' }) => {
           <div />
           <Title>FILTRAR</Title>
           <Close>
-            <IoClose />
+            <IoClose
+              onClick={(e: Event) => {
+                e.stopPropagation()
+                setVisible(!visible.value)
+              }}
+            />
           </Close>
         </HeaderTooltip>
-        <FormX onSubmit={handleForm}>
+        <FormX>
           {checkList.map((item, index) => (
-            <Item key={index}>
+            <Item key={`item-${index}`}>
               <Checkbox value={item} type='checkbox' onChange={handleCheck} />
               <span className={isChecked(item)}>{item}</span>
             </Item>
           ))}
-          <BtnApply type='submit' className='apply-btn'>
+          <BtnApply onClick={handleCheckboxList} type='button' className='apply-btn'>
             Aplicar
           </BtnApply>
         </FormX>

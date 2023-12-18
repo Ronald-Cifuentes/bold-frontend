@@ -63,7 +63,7 @@ export const Title = styled.h2`
   font-weight: 400;
 `
 
-export const Item = styled.div`
+export const Item = styled.label`
   display: flex;
   padding: 11px;
 `
@@ -82,4 +82,8 @@ export const BtnApply = styled.button`
   padding: 20px;
   font-size: 24px;
   font-weight: 500;
+  cursor: pointer;
+  &:hover {
+    background: #ce7f83;
+  }
 `

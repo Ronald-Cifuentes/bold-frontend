@@ -17,6 +17,7 @@ import { SectionLayoutProps } from './interfaces'
 import info from '../../assets/info.svg'
 import { signal } from '@preact/signals-react'
 import Tooltip from '../Tooltip'
+export const selectedRadioBtn = signal('month')
 
 export const texts = {
   text1: 'Total de ventas de septiembre',
@@ -25,15 +26,14 @@ export const texts = {
 }
 
 export const filter = [
-  { name: 'myRadio', key: 'option1', value: 'Hoy' },
-  { name: 'myRadio', key: 'option2', value: 'Esta semana' },
-  { name: 'myRadio', key: 'option3', value: 'Septiembre' },
+  { name: 'myRadio', key: 'day', value: 'Hoy' },
+  { name: 'myRadio', key: 'week', value: 'Esta semana' },
+  { name: 'myRadio', key: 'month', value: 'Septiembre' },
 ]
 
 // const transactFilter = signal(false)
 // const popupTimeFilter = signal(false)
 // const timeFilter = signal('')
-const selectedRadioBtn = signal('option3')
 
 // const handleTransactFilter = () => {
 //   transactFilter.value = true
@@ -51,11 +51,11 @@ const selectedRadioBtn = signal('option3')
 
 const SectionLayout: FC<SectionLayoutProps> = ({ dataTestId = 'section-layout' }) => {
   const handleRadio = (e: ChangeEvent<HTMLInputElement>) => {
-    console.log('xxx', e.target.value)
     selectedRadioBtn.value = e.target.value
   }
 
   const isRadioSelected = (value: string) => selectedRadioBtn.value === value
+
   return (
     <SectionLayoutContainer data-testid={dataTestId}>
       <Card>

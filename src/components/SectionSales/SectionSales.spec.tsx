@@ -1,6 +1,8 @@
 import { cleanup, render, screen } from '@testing-library/react'
 import SectionSales from './SectionSales'
 
+jest.mock('@preact/signals-react', () => ({ signal: (value: number) => ({ value }) }))
+
 describe('<SectionSales />', () => {
   beforeEach(() => {
     cleanup()

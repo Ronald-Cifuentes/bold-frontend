@@ -20,7 +20,7 @@ export const Th = styled.th`
 `
 
 export const Tr = styled.tr`
-  border-top: 1px solid #e3e3e3;
+  border-bottom: 1px solid #e3e3e3;
 `
 export const Td = styled.td`
   font-size: 18px;

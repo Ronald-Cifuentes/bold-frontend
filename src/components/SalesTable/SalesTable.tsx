@@ -19,6 +19,8 @@ import { SalesTableProps, Row, RowList } from './interfaces'
 import dataphone from '../../assets/dataphone.svg'
 import link from '../../assets/link.svg'
 import mastercard from '../../assets/mastercard.png'
+import { selectedRadioBtn } from '../SectionLayout/SectionLayout'
+import { listChecks } from '../Tooltip/Tooltip'
 
 const TransactionTypes = {
   dataphone: dataphone,
@@ -30,7 +32,6 @@ const HeadersX = [
     key: 'transaction',
     value: 'Transacción',
     cb: (row: Row, rowList: RowList) => {
-      console.log('xxxx', rowList[4].discount)
       const TransactionType =
         TransactionTypes?.[(row?.transactionType || 'dataphone') as keyof typeof TransactionTypes]
       return (
@@ -88,40 +89,100 @@ const HeadersX = [
 const rows = [
   [
     { key: 'transaction', value: 'Cobro exitoso', transactionType: 'dataphone' },
-    { key: 'dateTime', value: '04/06/2020 - 17:24:24' },
+    { key: 'dateTime', value: '12/01/2023 - 17:24:24' },
     { key: 'paymentMethod', value: '**** **** 7771' },
     { key: 'id', value: 'GZENZ3784UBV2' },
     { key: 'amount', value: '$25.000', discount: '$12.500' },
   ],
   [
     { key: 'transaction', value: 'Cobro no realizado', transactionType: 'dataphone' },
-    { key: 'dateTime', value: '04/06/2020 - 17:24:24' },
+    { key: 'dateTime', value: '12/18/2023 - 17:24:24' },
     { key: 'paymentMethod', value: '**** **** 7771' },
     { key: 'id', value: 'GZENZ3784UBV2' },
     { key: 'amount', value: '$25.000' },
   ],
   [
     { key: 'transaction', value: 'Cobro exitoso', transactionType: 'link' },
-    { key: 'dateTime', value: '04/06/2020 - 17:24:24' },
+    { key: 'dateTime', value: '12/19/2023 - 17:24:24' },
     { key: 'paymentMethod', value: '**** **** 7771' },
     { key: 'id', value: 'GZENZ3784UBV2' },
     { key: 'amount', value: '$25.000', discount: '$12.500' },
   ],
   [
     { key: 'transaction', value: 'Cobro exitoso', transactionType: 'dataphone' },
-    { key: 'dateTime', value: '04/06/2020 - 17:24:24' },
+    { key: 'dateTime', value: '12/30/2023 - 17:24:24' },
     { key: 'paymentMethod', value: '**** **** 7771' },
     { key: 'id', value: 'GZENZ3784UBV2' },
     { key: 'amount', value: '$25.000' },
   ],
   [
     { key: 'transaction', value: 'Cobro no realizado', transactionType: 'link' },
-    { key: 'dateTime', value: '04/06/2020 - 17:24:24' },
+    { key: 'dateTime', value: '12/02/2023 - 17:24:24' },
     { key: 'paymentMethod', value: '**** **** 7771' },
     { key: 'id', value: 'GZENZ3784UBV2' },
     { key: 'amount', value: '$25.000' },
   ],
 ]
+
+const FilterByDay = (): Row[][] => {
+  const currentDate = '12/18/2023'
+  const result: Row[][] = rows.filter(row => {
+    const dateObj = row.find(obj => obj.key === 'dateTime')
+    return dateObj && dateObj.value.startsWith(currentDate)
+  })
+  return result
+}
+
+const FilterByWeek = () => {
+  const startDate = new Date('12/18/2023')
+  const endDate = new Date('12/23/2023')
+
+  const result = rows.filter(row => {
+    const dateObj = row.find(obj => obj.key === 'dateTime')
+    if (dateObj) {
+      const rowDate = new Date(dateObj.value.split(' - ')[0])
+      return rowDate >= startDate && rowDate <= endDate
+    }
+    return false
+  })
+
+  return result
+}
+
+const FilterByMonth = () => {
+  const startDate = new Date('12/01/2023') // replace with the start date
+  const endDate = new Date('12/30/2023') // replace with the end date
+
+  const result = rows.filter(row => {
+    const dateObj = row.find(obj => obj.key === 'dateTime')
+    if (dateObj) {
+      const rowDate = new Date(dateObj.value.split(' - ')[0])
+      return rowDate >= startDate && rowDate <= endDate
+    }
+    return false
+  })
+
+  return result
+}
+
+const FilterByPayment = (rowx: Row[][], transactionTypes: string[]) => {
+  const result = rowx.filter(row => {
+    const transactionObj = row.find(obj => obj.key === 'transaction')
+    return transactionObj && transactionTypes.includes(String(transactionObj.transactionType))
+  })
+
+  return result
+}
+
+type FilterFunction = () => Row[][]
+
+type SelectTime = { [key: string]: FilterFunction; day: FilterFunction; week: FilterFunction }
+
+const selectTime: SelectTime = {
+  day: FilterByDay,
+  week: FilterByWeek,
+  month: FilterByMonth,
+}
 
 const SalesTable: FC<SalesTableProps> = ({ dataTestId = 'sales-table' }) => {
   return (
@@ -134,100 +195,17 @@ const SalesTable: FC<SalesTableProps> = ({ dataTestId = 'sales-table' }) => {
         </Tr>
       </Thead>
       <Tbody>
-        {rows.map((rowList: RowList, ix) => (
-          <Tr key={`tr-${ix}`}>
-            {rowList.map((col, iy) => (
-              <Td key={`td-${iy}`}>{HeadersX[iy].cb(col, rowList)}</Td>
-            ))}
-          </Tr>
-        ))}
-
-        {/* {rows.map((columns, ix) => {
-          console.log('xxx', columns)
-          return (
-            <Tr key={`tr-${ix}`} className='with-discount'>
-              {HeadersX.map((h, iy) => {
-                return <Td key={`td-${iy}`}>{}</Td>
-              })}
-              <Td>xxx</Td>
-            </Tr>
-          )
-        })} */}
-
-        {/* <Tr>
-          <Td>
-            <div className='transaction-column not-success'>
-              <img
-                className='icon-transaction'
-                src='assets/dataphone.svg'
-                alt='Cobro no realizado'
-              />
-              <p>Cobro no realizado</p>
-            </div>
-          </Td>
-          <Td>
-            <div className='date-time-column'>04/06/2020 - 17:24:24</div>
-          </Td>
-          <Td>
-            <div className='payment-method-column'>
-              <img
-                className='icon-transaction'
-                src='assets/mastercard.png'
-                alt='Cobro no realizado'
-              />
-              <p>**** **** 7771</p>
-            </div>
-          </Td>
-          <Td>
-            <div className='id-column'>GZENZ3784UBV2</div>
-          </Td>
-          <Td>
-            <div className='amount-column'>
-              <p>$15.000</p>
-              <div
-                style={{
-                  display: 'none',
-                }}
-              >
-                <p className='discount-title'>Deducción Bold</p>
-                <p className='discount-value'>$12.500</p>
-              </div>
-            </div>
-          </Td>
-        </Tr>
-        <Tr className='with-discount'>
-          <Td>
-            <div className='transaction-column success'>
-              <img className='icon-transaction' src='assets/link.svg' alt='Cobro exitoso' />
-              <p>Cobro exitoso</p>
-            </div>
-          </Td>
-          <Td>
-            <div className='date-time-column'>04/06/2020 - 17:24:24</div>
-          </Td>
-          <Td>
-            <div className='payment-method-column'>
-              <img
-                className='icon-transaction'
-                src='assets/mastercard.png'
-                alt='Cobro no realizado'
-              />
-              <p>**** **** 7771</p>
-            </div>
-          </Td>
-          <Td>
-            <div className='id-column'>GZENZ3784UBV2</div>
-          </Td>
-          <Td>
-            <div className='amount-column'>
-              <p>$25.000</p>
-              <div>
-                <p className='discount-title'>Deducción Bold</p>
-                <p className='discount-value'>$12.500</p>
-              </div>
-            </div>
-          </Td>
-        </Tr> */}
+        {FilterByPayment(selectTime[selectedRadioBtn?.value](), listChecks.value).map(
+          (rowList: RowList, ix) => {
+            return (
+              <Tr key={`tr-${ix}`}>
+                {rowList.map((col, iy) => (
+                  <Td key={`td-${iy}`}>{HeadersX[iy].cb(col, rowList)}</Td>
+                ))}
+              </Tr>
+            )
+          }
+        )}
       </Tbody>
     </SalesTableContainer>
   )

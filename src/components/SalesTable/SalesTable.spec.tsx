@@ -1,6 +1,8 @@
 import { cleanup, render, screen } from '@testing-library/react'
 import SalesTable from './SalesTable'
 
+jest.mock('@preact/signals-react', () => ({ signal: (value: number) => ({ value }) }))
+
 describe('<SalesTable />', () => {
   beforeEach(() => {
     cleanup()

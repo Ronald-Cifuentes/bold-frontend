@@ -1,19 +1,19 @@
 import { cleanup, render, screen } from '@testing-library/react'
-import Counter from './Counter'
+import Main from './Main'
 
 jest.mock('@preact/signals-react', () => ({ signal: (value: number) => ({ value }) }))
 
-describe('<Counter />', () => {
+describe('<Main />', () => {
   beforeEach(() => {
     cleanup()
     jest.clearAllMocks()
   })
 
   test('#1. Exist - Render default', () => {
-    render(<Counter />)
+    render(<Main />)
 
-    const counter = screen.getByTestId('counter')
+    const main = screen.getByTestId('main')
 
-    expect(counter).toBeInTheDocument()
+    expect(main).toBeInTheDocument()
   })
 })

@@ -1,12 +1,15 @@
 import { FC } from 'react'
 import { AppProps } from './interfaces'
 import { AppContainer } from './App.styled'
-import Counter from '../Counter'
+import './App.scss'
+import Navbar from '../Navbar'
+import Main from '../Main'
 
 const App: FC<AppProps> = ({ dataTestId = 'app' }) => {
   return (
     <AppContainer data-testid={dataTestId}>
-      <Counter />
+      <Navbar />
+      <Main />
     </AppContainer>
   )
 }

@@ -61,7 +61,7 @@ const SectionLayout: FC<SectionLayoutProps> = ({ dataTestId = 'section-layout' }
       <Card>
         <CardTitle>
           <CardTitleText>{texts.text1}</CardTitleText>
-          <IconInfo src={info} />
+          <IconInfo src={info} alt='info-icon' />
         </CardTitle>
         <CardContent>
           <div>
